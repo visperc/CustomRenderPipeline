@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\CustomRP\CustomRenderPiplineAsset.cs" />
+    <Compile Include="Assets\CustomRP\Runtime\CameraRender.cs" />
     <Compile Include="Assets\CustomRP\Runtime\CustomRenderPipeline.cs" />
     <Reference Include="UnityEngine">
       <HintPath>C:/Program Files/Unity2019/Unity/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
