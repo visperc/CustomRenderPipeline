@@ -3,21 +3,10 @@ using UnityEngine.Rendering;
 
 namespace Visperc.CRP
 {
-    public class CameraRender
+    public partial class CameraRender
     {
         static ShaderTagId unlitShaderTagId = new ShaderTagId("SRPDefaultUnlit");
 
-        //legacy shader pass
-        static ShaderTagId[] legacyShaderTagIds = {
-            new ShaderTagId("Always"),
-            new ShaderTagId("ForwardBase"),
-            new ShaderTagId("PrepassBase"),
-            new ShaderTagId("Vertex"),
-            new ShaderTagId("VertexLMRGBM"),
-            new ShaderTagId("VertexLM")
-        };
-
-        static Material errorMaterial = new Material(Shader.Find("Hidden/InternalErrorShader"));
 
         const string bufferName = "Render Camera";
 
@@ -33,6 +22,9 @@ namespace Visperc.CRP
         {
             this.context = context;
             this.camera = camera;
+#if UNITY_EDITOR
+            PrepareForSceneWindow();
+#endif
 
             if (!Cull())
             {
@@ -41,8 +33,9 @@ namespace Visperc.CRP
 
             Setup();
             DrawVisibleGeometry();
+#if UNITY_EDITOR
             DrawUnsupportedShaders();
-
+#endif
             Submit();
         }
 
@@ -93,20 +86,7 @@ namespace Visperc.CRP
 
         }
 
-        //绘制不支持的pass
-        void DrawUnsupportedShaders()
-        {
-            var drawingSettings = new DrawingSettings();
-            drawingSettings.overrideMaterial = errorMaterial;
-            for (int i = 0; i < legacyShaderTagIds.Length; i++)
-            {
-                drawingSettings.SetShaderPassName(i, legacyShaderTagIds[i]);
-            }
 
-            var filteringSettings = FilteringSettings.defaultValue;
-            context.DrawRenderers(cullingResults , ref drawingSettings , ref filteringSettings);
-            
-        }
 
         void ExecuteBuffer()
         {
