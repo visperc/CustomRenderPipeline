@@ -16,6 +16,12 @@ namespace Visperc.CRP
             name = bufferName
         };
 
+#if UNITY_EDITOR
+        string SampleName { get; set; }
+#else
+        const string SampleName = bufferName;
+#endif
+
         CullingResults cullingResults;
 
         public void Render(ScriptableRenderContext context , Camera camera)
@@ -23,6 +29,7 @@ namespace Visperc.CRP
             this.context = context;
             this.camera = camera;
 #if UNITY_EDITOR
+            PrepareBuffer();
             PrepareForSceneWindow();
 #endif
 
@@ -41,7 +48,8 @@ namespace Visperc.CRP
 
         void Setup()
         {
-            buffer.ClearRenderTarget(true, true, Color.clear);
+            CameraClearFlags flags = camera.clearFlags;
+            buffer.ClearRenderTarget(flags <= CameraClearFlags.Depth, flags == CameraClearFlags.Color, flags == CameraClearFlags.Color ? camera.backgroundColor.linear: Color.clear);
 
             context.SetupCameraProperties(camera);
             buffer.BeginSample(bufferName);
@@ -96,7 +104,7 @@ namespace Visperc.CRP
 
         void Submit()
         {
-            buffer.EndSample(bufferName);
+            buffer.EndSample(SampleName);
             ExecuteBuffer();
 
             context.Submit();

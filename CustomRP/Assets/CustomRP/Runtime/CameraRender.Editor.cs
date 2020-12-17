@@ -41,6 +41,11 @@ namespace Visperc.CRP
             }
         }
 
+        void PrepareBuffer()
+        {
+            buffer.name = SampleName = camera.name;
+        }
+
     }
 #endif
 }
