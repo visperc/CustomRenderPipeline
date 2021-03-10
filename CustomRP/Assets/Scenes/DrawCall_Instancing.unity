@@ -242,9 +242,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2996a9a56112b04cb3a5ddb77c803c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+  mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
   material: {fileID: 2100000, guid: 1603e928d7316eb418103377fef5ae3c, type: 2}
-  useGpuInstancing: 0
+  useGpuInstancing: 1
 --- !u!4 &1623249007
 Transform:
   m_ObjectHideFlags: 0
