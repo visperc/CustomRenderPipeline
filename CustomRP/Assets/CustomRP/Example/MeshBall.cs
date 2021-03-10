@@ -14,6 +14,9 @@ namespace Assets.CustomRP.Example
         [SerializeField]
         Material material = default;
 
+        [SerializeField]
+        bool useGpuInstancing = true;
+
         Matrix4x4[] matrices = new Matrix4x4[1023];
         Vector4[] baseColors = new Vector4[1023];
 
@@ -29,17 +32,30 @@ namespace Assets.CustomRP.Example
                 baseColors[i] =
                     new Vector4(Random.value, Random.value, Random.value, 1f);
             }
+
+            block = new MaterialPropertyBlock();
+            if (useGpuInstancing)
+            {
+                block.SetVectorArray(baseColorId , baseColors);
+            }
         }
 
         void Update()
         {
-            if (block == null)
+            if (useGpuInstancing)
             {
-                block = new MaterialPropertyBlock();
-                block.SetVectorArray(baseColorId, baseColors);
+                Graphics.DrawMeshInstanced(mesh, 0, material, matrices, 1023, block);
             }
-            Graphics.DrawMeshInstanced(mesh, 0, material, matrices, 1023, block);
-        }
+            else
+            {
+                for (int i = 0; i < matrices.Length; i++)
+                {
+                    block.SetVector(baseColorId , baseColors[i]);
+                    Graphics.DrawMesh(mesh, matrices[i], material, LayerMask.NameToLayer("Default") , Camera.main , 0 , block);
+                }
 
+            }
+        }
     }
+
 }

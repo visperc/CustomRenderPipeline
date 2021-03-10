@@ -24,7 +24,7 @@ namespace Visperc.CRP
 
         CullingResults cullingResults;
 
-        public void Render(ScriptableRenderContext context , Camera camera)
+        public void Render(ScriptableRenderContext context , Camera camera , bool useDynamicBatch , bool useGPUInstancing)
         {
             this.context = context;
             this.camera = camera;
@@ -39,7 +39,7 @@ namespace Visperc.CRP
             }
 
             Setup();
-            DrawVisibleGeometry();
+            DrawVisibleGeometry(useDynamicBatch , useGPUInstancing);
 #if UNITY_EDITOR
             DrawUnsupportedShaders();
 #endif
@@ -71,7 +71,7 @@ namespace Visperc.CRP
         /// <summary>
         /// 绘制可见的几何体
         /// </summary>
-        void DrawVisibleGeometry()
+        void DrawVisibleGeometry(bool useDynamicBatch , bool useGPUInstancing)
         {
             //绘制不透明物体（从前往后）
             //绘制天空盒
@@ -80,7 +80,10 @@ namespace Visperc.CRP
             var sortingSettings = new SortingSettings(camera) { 
                 criteria = SortingCriteria.CommonOpaque
             };
-            var drawingSettings = new DrawingSettings(unlitShaderTagId , sortingSettings);
+            var drawingSettings = new DrawingSettings(unlitShaderTagId, sortingSettings) {
+                enableInstancing = useGPUInstancing,
+                enableDynamicBatching = useDynamicBatch,
+            };
             var filteringSettings = new FilteringSettings(RenderQueueRange.all);
             context.DrawRenderers(cullingResults , ref drawingSettings , ref filteringSettings);
 
